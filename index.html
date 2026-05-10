@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Duel Arena — 2 Player Battle</title>
+    <meta name="description" content="A stunning neon-themed 2-player battle arena game. Grab a friend and duel with lasers, shields, and power-ups!">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated Background Stars -->
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- Main Menu Screen -->
+    <div id="menuScreen" class="screen active">
+        <div class="menu-container">
+            <div class="logo-glow"></div>
+            <h1 class="game-title">
+                <span class="title-neon">NEON</span>
+                <span class="title-duel">DUEL</span>
+                <span class="title-arena">ARENA</span>
+            </h1>
+            <p class="subtitle">⚡ LOCAL 2-PLAYER BATTLE ⚡</p>
+
+            <!-- Player Name Inputs -->
+            <div class="name-inputs">
+                <div class="name-field p1-field">
+                    <label class="cyan-text">PLAYER 1</label>
+                    <input type="text" id="p1Name" class="name-input p1-input" placeholder="Enter name..." maxlength="12" value="Player 1" autocomplete="off">
+                </div>
+                <div class="vs-divider-small"><span>VS</span></div>
+                <div class="name-field p2-field">
+                    <label class="magenta-text">PLAYER 2</label>
+                    <input type="text" id="p2Name" class="name-input p2-input" placeholder="Enter name..." maxlength="12" value="Player 2" autocomplete="off">
+                </div>
+            </div>
+            
+            <div class="menu-controls-preview">
+                <div class="player-controls p1-controls">
+                    <div class="controls-label cyan-text">CONTROLS</div>
+                    <div class="keys-row">
+                        <kbd>W</kbd>
+                    </div>
+                    <div class="keys-row">
+                        <kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
+                    </div>
+                    <div class="keys-row">
+                        <kbd class="wide-key">SPACE</kbd>
+                    </div>
+                </div>
+                <div class="vs-divider">
+                    <span>VS</span>
+                </div>
+                <div class="player-controls p2-controls">
+                    <div class="controls-label magenta-text">CONTROLS</div>
+                    <div class="keys-row">
+                        <kbd>↑</kbd>
+                    </div>
+                    <div class="keys-row">
+                        <kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd>
+                    </div>
+                    <div class="keys-row">
+                        <kbd class="wide-key">ENTER</kbd>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-buttons">
+                <button id="btnPlay" class="btn btn-primary" onclick="startGame()">
+                    <span class="btn-icon">🎮</span>
+                    <span>START BATTLE</span>
+                </button>
+                <button id="btnHowTo" class="btn btn-secondary" onclick="showHowTo()">
+                    <span class="btn-icon">📖</span>
+                    <span>HOW TO PLAY</span>
+                </button>
+                <button id="btnLeaderboard" class="btn btn-secondary" onclick="showLeaderboard()">
+                    <span class="btn-icon">🏆</span>
+                    <span>LEADERBOARD</span>
+                </button>
+                <button id="btnSettings" class="btn btn-secondary" onclick="showSettings()">
+                    <span class="btn-icon">⚙️</span>
+                    <span>SETTINGS</span>
+                </button>
+            </div>
+
+            <div class="footer-text">Made with 💜 for epic battles</div>
+        </div>
+    </div>
+
+    <!-- How to Play Screen -->
+    <div id="howToScreen" class="screen">
+        <div class="panel-container">
+            <h2 class="panel-title">HOW TO PLAY</h2>
+            <div class="howto-grid">
+                <div class="howto-card">
+                    <div class="howto-icon">🎯</div>
+                    <h3>Objective</h3>
+                    <p>Destroy your opponent's ship! First to win <strong>5 rounds</strong> takes the crown.</p>
+                </div>
+                <div class="howto-card">
+                    <div class="howto-icon">💥</div>
+                    <h3>Shooting</h3>
+                    <p>P1 uses <kbd>SPACE</kbd>, P2 uses <kbd>ENTER</kbd>. Shots have a short cooldown.</p>
+                </div>
+                <div class="howto-card">
+                    <div class="howto-icon">🛡️</div>
+                    <h3>Shield</h3>
+                    <p>P1 uses <kbd>Q</kbd>, P2 uses <kbd>SHIFT+→</kbd>. Blocks one hit but has a long cooldown.</p>
+                </div>
+                <div class="howto-card">
+                    <div class="howto-icon">⚡</div>
+                    <h3>Power-Ups</h3>
+                    <p>Collect glowing orbs: <span class="cyan-text">Speed</span>, <span class="magenta-text">Rapid Fire</span>, <span class="gold-text">Triple Shot</span>, <span class="green-text">Health</span>.</p>
+                </div>
+                <div class="howto-card">
+                    <div class="howto-icon">🌀</div>
+                    <h3>Dash</h3>
+                    <p>P1 uses <kbd>E</kbd>, P2 uses <kbd>/</kbd>. Quick burst of speed to dodge attacks!</p>
+                </div>
+                <div class="howto-card">
+                    <div class="howto-icon">🏆</div>
+                    <h3>Win!</h3>
+                    <p>Reduce your opponent's HP to zero. The arena shrinks over time — nowhere to hide!</p>
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="showMenu()">
+                <span class="btn-icon">←</span>
+                <span>BACK</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settingsScreen" class="screen">
+        <div class="panel-container">
+            <h2 class="panel-title">SETTINGS</h2>
+            <div class="settings-list">
+                <div class="setting-row">
+                    <label>Rounds to Win</label>
+                    <div class="setting-control">
+                        <button class="btn-sm" onclick="changeSetting('rounds', -1)">−</button>
+                        <span id="settingRounds">5</span>
+                        <button class="btn-sm" onclick="changeSetting('rounds', 1)">+</button>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <label>Arena Size</label>
+                    <div class="setting-control">
+                        <button class="btn-sm" onclick="changeSetting('arena', -1)">−</button>
+                        <span id="settingArena">Medium</span>
+                        <button class="btn-sm" onclick="changeSetting('arena', 1)">+</button>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <label>Power-Up Frequency</label>
+                    <div class="setting-control">
+                        <button class="btn-sm" onclick="changeSetting('powerups', -1)">−</button>
+                        <span id="settingPowerups">Normal</span>
+                        <button class="btn-sm" onclick="changeSetting('powerups', 1)">+</button>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <label>Sound Effects</label>
+                    <div class="setting-control">
+                        <button class="btn-sm" onclick="changeSetting('sound', 0)" id="settingSoundBtn">ON</button>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="showMenu()">
+                <span class="btn-icon">←</span>
+                <span>BACK</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+        <!-- HUD -->
+        <div id="hud">
+            <div class="hud-player hud-p1">
+                <div class="hud-name cyan-text">PLAYER 1</div>
+                <div class="hud-hp-bar">
+                    <div class="hud-hp-fill p1-hp" id="p1HpBar"></div>
+                    <span class="hud-hp-text" id="p1HpText">100</span>
+                </div>
+                <div class="hud-abilities">
+                    <div class="ability-icon" id="p1ShieldCd" title="Shield">🛡️</div>
+                    <div class="ability-icon" id="p1DashCd" title="Dash">💨</div>
+                </div>
+            </div>
+            <div class="hud-center">
+                <div class="hud-score">
+                    <span class="score-p1 cyan-text" id="scoreP1">0</span>
+                    <span class="score-divider">:</span>
+                    <span class="score-p2 magenta-text" id="scoreP2">0</span>
+                </div>
+                <div class="hud-round" id="roundText">ROUND 1</div>
+                <div class="hud-timer" id="timerText">2:00</div>
+            </div>
+            <div class="hud-player hud-p2">
+                <div class="hud-name magenta-text">PLAYER 2</div>
+                <div class="hud-hp-bar">
+                    <div class="hud-hp-fill p2-hp" id="p2HpBar"></div>
+                    <span class="hud-hp-text" id="p2HpText">100</span>
+                </div>
+                <div class="hud-abilities">
+                    <div class="ability-icon" id="p2ShieldCd" title="Shield">🛡️</div>
+                    <div class="ability-icon" id="p2DashCd" title="Dash">💨</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Canvas -->
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Round Start Overlay -->
+        <div id="roundOverlay" class="overlay">
+            <div class="round-announce" id="roundAnnounce">ROUND 1</div>
+            <div class="round-sub">GET READY!</div>
+        </div>
+
+        <!-- Pause Overlay -->
+        <div id="pauseOverlay" class="overlay hidden">
+            <div class="pause-text">PAUSED</div>
+            <button class="btn btn-primary" onclick="resumeGame()">RESUME</button>
+            <button class="btn btn-secondary" onclick="quitToMenu()">QUIT</button>
+        </div>
+    </div>
+
+    <!-- Leaderboard Screen -->
+    <div id="leaderboardScreen" class="screen">
+        <div class="panel-container leaderboard-panel">
+            <h2 class="panel-title">🏆 LEADERBOARD</h2>
+            <div id="leaderboardContent" class="leaderboard-list"></div>
+            <button class="btn btn-secondary" onclick="showMenu()">
+                <span class="btn-icon">←</span>
+                <span>BACK</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Victory Screen -->
+    <div id="victoryScreen" class="screen">
+        <div class="victory-container">
+            <!-- Winner Face & Crown -->
+            <div class="victory-faces">
+                <div class="victory-face p1-face" id="victoryP1Face">
+                    <canvas id="p1FaceCanvas" width="80" height="80"></canvas>
+                    <div class="face-name" id="victoryP1Name">Player 1</div>
+                    <div class="face-score" id="victoryP1Score">0</div>
+                </div>
+                <div class="victory-vs">VS</div>
+                <div class="victory-face p2-face" id="victoryP2Face">
+                    <canvas id="p2FaceCanvas" width="80" height="80"></canvas>
+                    <div class="face-name" id="victoryP2Name">Player 2</div>
+                    <div class="face-score" id="victoryP2Score">0</div>
+                </div>
+            </div>
+
+            <div class="victory-crown" id="victoryCrown">👑</div>
+            <h2 class="victory-title" id="victoryTitle">PLAYER 1 WINS!</h2>
+            <div class="victory-rank-update" id="victoryRankUpdate"></div>
+
+            <!-- Compact Stats Row -->
+            <div class="victory-stats-compact" id="victoryStats"></div>
+
+            <!-- Buttons always visible -->
+            <div class="victory-buttons">
+                <button class="btn btn-primary" onclick="startGame()">
+                    <span class="btn-icon">🔄</span>
+                    <span>REMATCH</span>
+                </button>
+                <button class="btn btn-secondary" onclick="showMenu()">
+                    <span class="btn-icon">🏠</span>
+                    <span>MENU</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
